@@ -190,7 +190,7 @@ var minutes = "0" + date.getMinutes();
 // Seconds
 var seconds = "0" + date.getSeconds();
 // Display date time in MM-dd-yyyy h:m:s format
-return `${year}Year ${month} ${day}Day ${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`;
+return `${year} ${month} ${day} ${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`;
 }
 
 if(TIME < 0.5) {
