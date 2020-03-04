@@ -197,6 +197,6 @@ if(TIME < 0.5) {
   console.error("Time cannot set under 0.5seconds otherwise,it will reached Hypixel API limited");
 
 }
-
+client.login(DISCORD_TOKEN)
 
 
