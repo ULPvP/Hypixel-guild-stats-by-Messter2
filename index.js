@@ -4,9 +4,9 @@ const request = require("request");
 
 
 //Discord機器人Token
-const DISCORD_TOKEN = "NjUzMjAwOTk3MjYyMjk1MDQw.Xl9zTg.cdKgqDSUYaOoDDCAi2pk8EnUCz8";
+const DISCORD_TOKEN = process.env.TOKEN
 //到Hypixel大廳打 /api new 取得
-const HYPIXEL_API = "99805bc5-3cdd-4b7c-a800-fe7073ecf4fa";
+const HYPIXEL_API = process.env.HYAPI
 
 const PREFIX = "ul!";
 const CMD = "guild";
@@ -16,61 +16,61 @@ const TIME = 5;
 
 client.on('ready', () => {
   console.log("啟動成功");
-  client.user.setGame('ul!guild Messter|創作者:UL#1188')
+  client.user.setGame('ul!guild Messter2|By UL#1188')
 })
 
 client.on('message', async msg => {
   let args = msg.content.split(" ").slice(1);
   if(msg.content.startsWith(PREFIX + CMD)) {
     let sendingemb = new Discord.RichEmbed()
-      .setTitle("搜尋中...");
+      .setTitle("Searching...");
     let sending = await msg.channel.send(sendingemb);
     if(!args[0]) {
         let noarg = new Discord.RichEmbed()
-          .setTitle("請輸入你的名字")
-          .setDescription(`範例\n\`${PREFIX}${CMD} Messter\``);
+          .setTitle("Please Enter Your IGN")
+          .setDescription(`Example\n\`${PREFIX}${CMD} Messter2\``);
         return sending.edit(noarg);
     }
     request({method:'GET', url:`https://api.hypixel.net/player?key=${HYPIXEL_API}&name=${args[0]}`, json:true}, (err,res,data) => {
         if(data.player == null) {
           let error = new Discord.RichEmbed()
-            .setTitle("錯誤的名字")
-            .setDescription(`範例\n\`${PREFIX}${CMD} Messter2\``);
+            .setTitle("You've entered a wrong IGN")
+            .setDescription(`Example\n\`${PREFIX}${CMD} Messter2\``);
             return sending.edit(error);
         }
         request({method:'GET', url:`https://api.hypixel.net/findGuild?key=${HYPIXEL_API}&byUuid=${data.player.uuid}`, json:true}, (err,res,data1) => {
           if(!data1.success) {
             let unkown = new Discord.RichEmbed()
-              .setTitle("未知的錯誤");
+              .setTitle("Unknown Error");
             return sending.edit(unkown);
           }
           if(data1.guild == null) {
             let nullerr = new Discord.RichEmbed()
-              .setTitle("錯誤")
-              .setDescription("該玩家沒有公會");
+              .setTitle("Erroe")
+              .setDescription("The player you've entered haven't join any hypixel guild.");
             return sending.edit(nullerr);
           }
           request({method:'GET', url:`https://api.hypixel.net/guild?key=${HYPIXEL_API}&id=${data1.guild}`, json:true}, (err,res,data2) => {
             if(!data2.success) {
               let unkown1 = new Discord.RichEmbed()
-                .setTitle("未知的錯誤");
+                .setTitle("Unknown Error");
               return sending.edit(unkown1);
             }
             let successGuild = new Discord.RichEmbed()
-              successGuild.setTitle(`${data.player.displayname} 的公會資訊`)
+              successGuild.setTitle(`${data.player.displayname} 's guild information`)
               successGuild.setColor(getRandomColor())
-              successGuild.addField("公會名稱", `\`${data2.guild.name}\``);
-            if(data2.guild.description != null) successGuild.addField("簡介", `\`${data2.guild.description}\``);
+              successGuild.addField("Guild Name", `\`${data2.guild.name}\``);
+            if(data2.guild.description != null) successGuild.addField("Description", `\`${data2.guild.description}\``);
 
-              if(data2.guild.tagColor != null) successGuild.addField("Tag/顏色", `\`${data2.guild.tag}/${data2.guild.tagColor}\``, true);
-              successGuild.addField("成員數量", `\`${data2.guild.members.length}\``, true)
-              successGuild.addField("在線玩家", `\`${data2.guild.achievements.ONLINE_PLAYERS}\``, true)
-              successGuild.addField("等級", `\`${Math.floor(getLevel(data2.guild.exp))}\``, true)
-              successGuild.addField("建立時間", `\`${convert(data2.guild.created)}\``, true)
-              successGuild.addField("等級排名", `\`${convert(data2.guild.level)}\``, true)
+              if(data2.guild.tagColor != null) successGuild.addField("Tag/Color", `\`${data2.guild.tag}/${data2.guild.tagColor}\``, true);
+              successGuild.addField("Members", `\`${data2.guild.members.length}\``, true)
+              successGuild.addField("Online Player", `\`${data2.guild.achievements.ONLINE_PLAYERS}\``, true)
+              successGuild.addField("Level", `\`${Math.floor(getLevel(data2.guild.exp))}\``, true)
+              successGuild.addField("Creation Date", `\`${convert(data2.guild.created)}\``, true)
+            
 
 
-              if(data2.guild.preferredGames != null) successGuild.addField("首選遊戲", `\`${data2.guild.preferredGames.join(",")}\``);
+              if(data2.guild.preferredGames != null) successGuild.addField("Preferred Games", `\`${data2.guild.preferredGames.join(",")}\``);
               successGuild.setTimestamp();
             sending.edit(successGuild)
           })
@@ -78,27 +78,27 @@ client.on('message', async msg => {
           request({method:'GET', url:`https://api.hypixel.net/guild?key=${HYPIXEL_API}&id=${data1.guild}`, json:true}, (err,res,data2) => {
             if(!data2.success) {
               let unkown1 = new Discord.RichEmbed()
-                .setTitle("未知的錯誤2");
+                .setTitle("Unknown Error2");
               return sending.edit(unkown1);
             }
 
             let successGuild = new Discord.RichEmbed()
-              successGuild.setTitle(`${data.player.displayname} 的公會資訊`)
+              successGuild.setTitle(`${data.player.displayname} 's guild information`)
               successGuild.setColor(getRandomColor())
-              successGuild.addField("公會名稱", `\`${data2.guild.name}\``);
-            if(data2.guild.description != null) successGuild.addField("簡介", `\`${data2.guild.description}\``);
+              successGuild.addField("Guild Name", `\`${data2.guild.name}\``);
+            if(data2.guild.description != null) successGuild.addField("Description", `\`${data2.guild.description}\``);
 
-              if(data2.guild.tagColor != null) successGuild.addField("Tag/顏色", `\`${data2.guild.tag}/${data2.guild.tagColor}\``, true);
-              successGuild.addField("成員數量", `\`${data2.guild.members.length}\``, true)
-              successGuild.addField("在線玩家", `\`${data2.guild.achievements.ONLINE_PLAYERS}\``, true)
-              successGuild.addField("等級", `\`${Math.floor(getLevel(data2.guild.exp))}\``, true)
-              successGuild.addField("建立時間", `\`${convert(data2.guild.created)}\``, true)
-
-
+              if(data2.guild.tagColor != null) successGuild.addField("Tag/Color", `\`${data2.guild.tag}/${data2.guild.tagColor}\``, true);
+              successGuild.addField("Members", `\`${data2.guild.members.length}\``, true)
+              successGuild.addField("Online Players", `\`${data2.guild.achievements.ONLINE_PLAYERS}\``, true)
+              successGuild.addField("Level", `\`${Math.floor(getLevel(data2.guild.exp))}\``, true)
+              successGuild.addField("Creation Date", `\`${convert(data2.guild.created)}\``, true)
 
 
 
-              if(data2.guild.preferredGames != null) successGuild.addField("首選遊戲", `\`${data2.guild.preferredGames.join(",")}\``);
+
+
+              if(data2.guild.preferredGames != null) successGuild.addField("Preferred Games", `\`${data2.guild.preferredGames.join(",")}\``);
               successGuild.setTimestamp();
             sending.edit(successGuild)
           })
@@ -110,10 +110,10 @@ client.on('message', async msg => {
 
 function boolToString(bool) {
   if(bool) {
-    return "是";
+    return "Yes";
   }
   if(!bool) {
-    return "否";
+    return "No";
   }
 }
 
@@ -174,7 +174,7 @@ function convert(unix){
 // Unixtimestamp
 var unixtimestamp = unix;
 // Months array
-var months_arr = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+var months_arr = ['January','February','March ','April','May','June','July','August','September','October','November','December'];
 // Convert timestamp to milliseconds
 var date = new Date(unixtimestamp);
 // Year
@@ -194,7 +194,7 @@ return `${year}年 ${month} ${day}日 ${hours}:${minutes.substr(-2)}:${seconds.s
 }
 
 if(TIME < 0.5) {
-  console.error("時間不能設定低於0.5秒會超過Hypixel API限制");
+  console.error("Time cannot set under 0.5seconds otherwise,it will reached Hypixel API limited");
 
 }
 
