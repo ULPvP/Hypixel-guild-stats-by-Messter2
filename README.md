@@ -1,1 +1,2 @@
-# Hypixel-guild-stats-by-Messter2
+By Messter2
+Discord:UL老熊#1188
